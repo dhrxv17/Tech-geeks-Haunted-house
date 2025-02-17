@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Haunted Mansion</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'display', sans-serif;
+      background-color: black;
+      color: white;
+      text-align: center;
+      background-size: cover;
+      background-position: center;
+     
+   
+    }
+
+    .container {
+      max-width: 800px;
+      margin: auto;
+      padding: 20px;
+      background: rgba(0, 0, 0, 0.7);
+      border-radius: 10px;
+    }
+
+    h1 {
+      font-size: 3em;
+      text-shadow: 3px 3px 10px red;
+    }
+
+    p {
+      font-size: 1.2em;
+    }
+
+    .media-container {
+      width: auto;
+      height: 400px;
+      border: 5px solid red;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    video,
+    img {
+      width: 100%;
+      height: auto;
+      transition: opacity 1s ease-in-out;
+    }
+
+    .btn {
+      padding: 10px 20px;
+      background: red;
+      color: white;
+      border: none;
+      font-size: 1.2em;
+      cursor: pointer;
+      margin: 10px;
+    }
+
+    .btn:hover {
+      background: darkred;
+    }
+  </style>
+</head>
+
+<body style="background-image: url('haunted\ house.jpg');">
+  <!-- Background music -->
+  <audio id="bgMusic" loop>
+    <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3" type="audio/mpeg">
+  </audio>
+
+  <!-- Sound effect for transitions -->
+  <audio id="sfx">
+    <source src="https://www.soundjay.com/misc/sounds/creaky-door-1.mp3" type="audio/mpeg">
+  </audio>
+
+  <div class="container"style="background-image: url('haunted\ house.jpg');">
+    <h1>Welcome to the Haunted Mansion</h1>
+    <div class="media-container">
+      <video id="sceneVideo" autoplay loop muted>
+        <source src="hello.mp4" type="video/mp4">
+      </video>
+    </div>
+    <p id="sceneText" style="font-family: display; color: darkgray; text-align: center;">
+        You have arrived at the gates of an ancient mansion, whispered to be cursed. The wrought-iron gates creak ominously in the wind, and the overgrown ivy clings to the crumbling stone walls. Shadows dance in the flickering light of a distant lantern. Do you dare enter?
+    </p><button class="btn" onclick="startStory()">Enter</button>
+  </div>
+
+  <script>
+    function startStory() {
+      document.getElementById("bgMusic").play();
+      nextScene();
+    }
+
+    let scenes = [
+      {
+        
+        title: "The Dark Hallway",
+        text: "The door creaks open... The darkness swallows you whole. A whisper echoes through the hall.",
+        mediaType: "video",
+        mediaSrc: "dark.mp4",
+        bg: "https://source.unsplash.com/1600x900/?dark,castle",
+        sfx: "https://www.soundjay.com/misc/sounds/creaky-door-1.mp3"
+      },
+      {
+        title: "The Ghost Appears",
+        text: "A terrifying ghost emerges from the shadows, its hollow eyes locked onto you...",
+        mediaType: "gif",
+        mediaSrc: "ghost appears.gif",
+        bg: "https://source.unsplash.com/1600x900/?ghostly,haunted",
+        sfx: "https://www.soundjay.com/misc/sounds/ghost-1.mp3"
+      }
+    ];
+
+    let currentScene = 0;
+
+    function playSFX(src) {
+      let sfx = document.getElementById("sfx");
+      sfx.src = src;
+      sfx.play();
+    }
+
+    function nextScene() {
+      if (currentScene < scenes.length) {
+        document.body.style.backgroundImage = `url('haunted house.jpg')`;
+        playSFX(scenes[currentScene].sfx);
+
+        document.getElementById("sceneText").innerText = scenes[currentScene].text;
+        document.querySelector("h1").innerText = scenes[currentScene].title;
+
+        let mediaContainer = document.querySelector(".media-container");
+        mediaContainer.innerHTML = ""; 
+
+        if (scenes[currentScene].mediaType === "video") {
+          let video = document.createElement("video");
+          video.src = scenes[currentScene].mediaSrc;
+          video.autoplay = true;
+          video.loop = true;
+          video.muted = true;
+          video.style.width = "100%";
+          mediaContainer.appendChild(video);
+        } else if (scenes[currentScene].mediaType === "gif") {
+          let img = document.createElement("img");
+          img.src = scenes[currentScene].mediaSrc;
+          img.style.width = "100%";
+          mediaContainer.appendChild(img);
+        }
+
+        if (currentScene === 1) {
+          document.querySelector(".btn").style.display = "none";
+          createBranchButtons();
+        }
+
+        currentScene++;
+      }
+    }
+
+    function createBranchButtons() {
+      const container = document.querySelector(".container");
+
+      const confrontBtn = document.createElement("button");
+      confrontBtn.className = "btn";
+      confrontBtn.innerText = "Confront the Ghost";
+      confrontBtn.onclick = confrontGhost;
+
+      const runBtn = document.createElement("button");
+      runBtn.className = "btn";
+      runBtn.innerText = "Run Away";
+      runBtn.onclick = runAway;
+
+      container.appendChild(confrontBtn);
+      container.appendChild(runBtn);
+    }
+
+    function confrontGhost() {
+      document.body.style.backgroundImage = "url('haunted house.jpg')";
+      playSFX("https://www.soundjay.com/misc/sounds/thunder-1.mp3");
+      document.querySelector("h1").innerText = "The Final Confrontation";
+      document.getElementById("sceneText").innerText = "NOW YOU'RE DEAD ";
+      
+      document.querySelector(".media-container").innerHTML = '<video src="GOT KILLED.mp4"></video>';
+
+      removeBranchButtons();
+      setTimeout(() => document.getElementById("bgMusic").pause(), 3000);
+    }
+
+    function runAway() {
+      document.body.style.backgroundImage = "url('haunted house.jpg')";
+      playSFX("https://www.soundjay.com/misc/sounds/scream-1.mp3");
+      document.querySelector("h1").innerText = "The Haunting Continues...";
+      document.getElementById("sceneText").innerText = "You run away into the night, but the ghost's curse follows you...";
+      
+      document.querySelector(".media-container").innerHTML ='<video src="RUNNING BEHIND.mp4"></video>';
+
+      removeBranchButtons();
+      setTimeout(() => document.getElementById("bgMusic").pause(), 3000);
+    }
+
+    function removeBranchButtons() {
+      document.querySelectorAll(".container .btn").forEach(btn => btn.remove());
+    }
+  </script>
+</body>
+
+</html>
